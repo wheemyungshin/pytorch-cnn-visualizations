@@ -112,16 +112,22 @@ class CNNLayerVisualization():
                     '_f' + str(self.selected_filter) + '_iter' + str(i) + '.jpg'
                 save_image(self.created_image, im_path)
 
-
 if __name__ == '__main__':
-    cnn_layer = 17
+    cnn_layer = 15
     filter_pos = 5
     # Fully connected layer is not needed
-    pretrained_model = models.vgg16(pretrained=True).features
-    layer_vis = CNNLayerVisualization(pretrained_model, cnn_layer, filter_pos)
 
-    # Layer visualization with pytorch hooks
-    layer_vis.visualise_layer_with_hooks()
+    state_dict = torch.load('/home/mlvcgpu/wheemi/faster-rcnn.pytorch/models/res50/pascal_voc/faster_rcnn_1_51_1324.pth')
+    vgg = models.vgg16()
+    vgg.load_state_dict({k:v for k,v in state_dict.items() if k in vgg.state_dict()},strict=False)
+    pretrained_model = vgg.features
+        
+    for j in [2,10,17,24]:
+        for i in range(filter_pos):
+            layer_vis = CNNLayerVisualization(pretrained_model, j, i)
+
+            # Layer visualization with pytorch hooks
+            layer_vis.visualise_layer_with_hooks()
 
     # Layer visualization without pytorch hooks
     # layer_vis.visualise_layer_without_hooks()
