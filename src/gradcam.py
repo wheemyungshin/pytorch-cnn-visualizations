@@ -65,6 +65,7 @@ class GradCam():
             target_class = np.argmax(model_output.data.numpy())
         # Target for backprop
         one_hot_output = torch.FloatTensor(1, model_output.size()[-1]).zero_()
+        print(one_hot_output)
         one_hot_output[0][target_class] = 1
         # Zero grads
         self.model.features.zero_grad()
